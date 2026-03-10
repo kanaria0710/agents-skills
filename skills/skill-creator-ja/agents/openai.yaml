@@ -1,0 +1,4 @@
+interface:
+  display_name: "Skill Creator JA"
+  short_description: "Create and refine skills with Japanese-ready guidance"
+  default_prompt: "Create or improve a Codex skill with clear Japanese documentation and clarification questions when requirements are ambiguous."

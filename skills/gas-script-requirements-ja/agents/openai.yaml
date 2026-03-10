@@ -1,0 +1,4 @@
+interface:
+  display_name: "GAS Script Requirements JA"
+  short_description: "GAS実装前の要件ヒアリングと仕様確定"
+  default_prompt: "Use $gas-script-requirements-ja to gather missing details and produce an implementation-ready GAS requirements specification before coding."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "GAS Modular Method Files"
+  short_description: "GAS分割構成とclasp運用（作成・同期・ログ確認）"
+  default_prompt: "Use $gas-modular-method-files to create, clone, pull, push, and monitor Google Apps Script projects with one top-level function per file."

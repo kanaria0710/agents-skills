@@ -1,0 +1,4 @@
+interface:
+  display_name: "Subagent Skill Orchestrator"
+  short_description: "Design subagent-skill-tool systems"
+  default_prompt: "Use $subagent-skill-orchestrator to design and review a subagent/skill/tool architecture, then produce an implementation-ready Markdown spec."
