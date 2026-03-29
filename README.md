@@ -10,7 +10,6 @@ Claude Code / Codex 向けのエージェントスキルコレクション。
 | [find-skills](skills/find-skills/) | スキルの検索・発見 |
 | [gas-modular-method-files](skills/gas-modular-method-files/) | GAS 開発（clasp + モジュラー構成） |
 | [gas-script-requirements-ja](skills/gas-script-requirements-ja/) | GAS スクリプトの要件定義 |
-| [skill-creator-ja](skills/skill-creator-ja/) | スキル作成（日本語ワークフロー） |
 | [subagent-skill-orchestrator](skills/subagent-skill-orchestrator/) | マルチエージェントワークフロー設計・構築 |
 
 ## インストール
@@ -25,7 +24,7 @@ Claude Code / Codex 向けのエージェントスキルコレクション。
 ./install.sh install
 
 # 特定のスキルだけインストール
-./install.sh install find-skills skill-creator-ja
+./install.sh install find-skills
 
 # スキルをアンインストール
 ./install.sh uninstall find-skills
@@ -53,6 +52,36 @@ Claude Code / Codex 向けのエージェントスキルコレクション。
 - `~/.claude/skills/` — Claude Code 用
 - `~/.codex/skills/` — Codex 用
 - `~/.agents/skills/` — 存在する場合のみ
+
+## marketplace を使った skill-creator のインストール
+
+スキル作成には、[skills.sh](https://skills.sh/) マーケットプレイスで公開されている `skill-creator` を使用してください。
+
+### インストール
+
+```bash
+npx skills add kanaria0710/agents-skills@skill-creator
+```
+
+または、インタラクティブに検索してインストールする場合：
+
+```bash
+npx skills find skill-creator
+```
+
+### アップデート
+
+インストール済みのスキルを最新版に更新するには：
+
+```bash
+npx skills update
+```
+
+特定のスキルのみ更新する場合：
+
+```bash
+npx skills update kanaria0710/agents-skills@skill-creator
+```
 
 ## 手動インストール
 
