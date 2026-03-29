@@ -11,7 +11,6 @@ Claude Code / Codex 向けのエージェントスキルコレクション。
 | [gas-modular-method-files](skills/gas-modular-method-files/) | GAS 開発（clasp + モジュラー構成） |
 | [gas-script-requirements-ja](skills/gas-script-requirements-ja/) | GAS スクリプトの要件定義 |
 | [skill-creator-ja](skills/skill-creator-ja/) | スキル作成（日本語ワークフロー） |
-| [skill-creator-max](skills/skill-creator-max/) | スキル作成（フルライフサイクル） |
 | [subagent-skill-orchestrator](skills/subagent-skill-orchestrator/) | マルチエージェントワークフロー設計・構築 |
 
 ## インストール

@@ -1,5 +1,0 @@
-name: skill-creator-max
-description: Comprehensive skill builder covering the full lifecycle from planning to validation using the official Anthropic skill-building guide.
-instructions:
-  type: file
-  path: ../SKILL.md
