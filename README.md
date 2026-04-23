@@ -49,3 +49,29 @@ agents-skills/
 ```bash
 ./install.sh
 ```
+
+## プロファイル配置 (用途別ディレクトリ)
+
+特定の作業ディレクトリでのみ使いたいスキル/エージェントは、プロファイル機能でそのディレクトリ配下 (`<target>/.claude/{skills,agents}/`) にのみ配置できる。
+
+| プロファイル | ターゲット | skills | agents |
+|---|---|---|---|
+| note | `~/note` | — | note-article-writer |
+| slide | `~/slide` | marp-slide-creator | marp-slide-creator, marp-slide-reviewer, marp-pdf-converter |
+| knowledge | `~/knowledge` | llm-wiki | — |
+
+```bash
+./install.sh list-profiles                    # 一覧と配置状況
+./install.sh install-profile slide            # slide プロファイルをインストール
+./install.sh install-profile slide --force    # 上書き
+./install.sh status-profile                   # 詳細ステータス
+./install.sh uninstall-profile slide          # アンインストール
+```
+
+プロファイルに移したスキル/エージェントはグローバルから外す:
+
+```bash
+./install.sh uninstall marp-slide-creator llm-wiki
+./install.sh uninstall-agents note-article-writer marp-slide-creator \
+    marp-slide-reviewer marp-pdf-converter
+```
