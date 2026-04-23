@@ -2,18 +2,18 @@
 
 ## 一覧
 
-| # | スキル名 | カテゴリ | ファイル数 | UI言語 | 概要 |
-|---|---|---|---|---|---|
-| 1 | codex-dispatcher | エージェント連携 | 1 | JA | Codex へのタスクディスパッチ |
-| 2 | codex-primary-runtime | エージェント連携 | 12 | EN | Codex 用 PPTX/XLSX 処理 (サブスキル2個) |
-| 3 | find-skills | スキル管理 | 1 | EN | スキル検索・インストールヘルパー |
-| 4 | flow-plan | 計画・設計 | 1 | JA | 実装ヒアリング → 詳細計画作成 |
-| 5 | gas-modular-method-files | GAS | 7 | EN/JA | GAS clasp モジュラー構成 (create/clone/pull/push/log) |
-| 6 | gas-script-requirements-ja | GAS | 5 | EN/JA | GAS 要件定義・仕様策定 |
-| 7 | llm-wiki | ナレッジ管理 | 6 | JA | LLM Wiki パターンでナレッジベース構築 (init/ingest/query/lint) |
-| 8 | marp-slide-creator | 資料作成 | 6 | JA | Marp スライド作成・レビュー |
-| 9 | playwright-automation | 自動化 | 5 | JA | Playwright ブラウザ自動操作・スクリーンショット |
-| 10 | inventory | 管理 | 1 | JA | スキル・プラグイン・エージェントの棚卸し・整理 |
+| # | スキル名 | カテゴリ | スコープ | ファイル数 | UI言語 | 概要 |
+|---|---|---|---|---|---|---|
+| 1 | codex-dispatcher | エージェント連携 | グローバル | 1 | JA | Codex へのタスクディスパッチ |
+| 2 | codex-primary-runtime | エージェント連携 | グローバル | 12 | EN | Codex 用 PPTX/XLSX 処理 (サブスキル2個) |
+| 3 | find-skills | スキル管理 | グローバル | 1 | EN | スキル検索・インストールヘルパー |
+| 4 | flow-plan | 計画・設計 | グローバル | 1 | JA | 実装ヒアリング → 詳細計画作成 |
+| 5 | gas-modular-method-files | GAS | グローバル | 7 | EN/JA | GAS clasp モジュラー構成 (create/clone/pull/push/log) |
+| 6 | gas-script-requirements-ja | GAS | グローバル | 5 | EN/JA | GAS 要件定義・仕様策定 |
+| 7 | llm-wiki | ナレッジ管理 | プロファイル: knowledge (~/knowledge) | 6 | JA | LLM Wiki パターンでナレッジベース構築 (init/ingest/query/lint) |
+| 8 | marp-slide-creator | 資料作成 | プロファイル: slide (~/slide) | 6 | JA | Marp スライド作成・レビュー |
+| 9 | playwright-automation | 自動化 | グローバル | 5 | JA | Playwright ブラウザ自動操作・スクリーンショット |
+| 10 | inventory | 管理 | グローバル | 1 | JA | スキル・プラグイン・エージェントの棚卸し・整理 |
 
 ## カテゴリ別分類
 
@@ -54,6 +54,16 @@
 |---|---|---|
 | find-skills | スキル検索・インストール | npx skills エコシステム対応 |
 | inventory | スキル/プラグイン/エージェントの棚卸し | scan/select-delete/update-docs の3操作 |
+
+## プロファイル配置
+
+特定の作業ディレクトリ専用にするスキルは `install.sh install-profile <name>` で配置する。グローバルには配置しない。
+
+| プロファイル | ターゲット | 配置されるスキル |
+|---|---|---|
+| knowledge | ~/knowledge | llm-wiki |
+| slide | ~/slide | marp-slide-creator |
+| note | ~/note | （skills なし。agents のみ） |
 
 ## スキル間の依存関係
 

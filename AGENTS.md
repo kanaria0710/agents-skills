@@ -14,7 +14,10 @@ Claude Code / Codex で使用するエージェント定義と自作スキルを
 - `install.sh` — スキルを `~/.agents/skills/`, `~/.claude/skills/`, `~/.codex/skills/` にインストールするスクリプト
 
 ### install.sh
-- コマンド: `list`, `install`, `uninstall`, `status`
+- スキルコマンド: `list`, `install`, `uninstall`, `status`
+- エージェントコマンド: `list-agents`, `install-agents`, `uninstall-agents`, `status-agents`
+- プロファイルコマンド: `list-profiles`, `install-profile`, `uninstall-profile`, `status-profile`
 - デフォルトはシンボリックリンク作成 (`--copy` でコピーモード)
 - `.system` ディレクトリは保護される
-- ターゲット: `~/.agents/skills/`, `~/.claude/skills/`, `~/.codex/skills/` (重複排除済み)
+- グローバルターゲット: `~/.agents/skills/`, `~/.claude/skills/`, `~/.codex/skills/` (重複排除済み) と `~/.claude/agents/`
+- プロファイル: `note` → `~/note`, `slide` → `~/slide`, `knowledge` → `~/knowledge`。各ターゲット配下の `.claude/{skills,agents}/` に配置する

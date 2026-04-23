@@ -2,16 +2,16 @@
 
 ## Claude Code エージェント (6個)
 
-定義元: `~/.claude/agents/` → リポジトリ: `agents/`
+定義元: リポジトリ `agents/`。グローバル配置は `~/.claude/agents/`、プロファイル配置は `<target>/.claude/agents/`。
 
-| # | エージェント名 | モデル | 用途 | 関連スキル |
-|---|---|---|---|---|
-| 1 | flow-plan-architect | opus | 要件定義・システム設計のヒアリングと計画書作成 | flow-plan |
-| 2 | marp-slide-creator | sonnet | Marp スライド作成 | marp-slide-creator |
-| 3 | marp-slide-reviewer | sonnet | Marp スライド品質チェック (4段階レビュー) | marp-slide-creator |
-| 4 | marp-pdf-converter | sonnet | Marp → PDF 変換 | - |
-| 5 | note-article-writer | opus | note 記事共同執筆 (日本語, 1-2万字) | - |
-| 6 | codex-dispatcher-lead | sonnet | Codex へ実装指示・レビューサイクル管理 (最大2ラウンド) | codex-dispatcher |
+| # | エージェント名 | モデル | スコープ | 用途 | 関連スキル |
+|---|---|---|---|---|---|
+| 1 | flow-plan-architect | opus | グローバル | 要件定義・システム設計のヒアリングと計画書作成 | flow-plan |
+| 2 | marp-slide-creator | sonnet | プロファイル: slide (~/slide) | Marp スライド作成 | marp-slide-creator |
+| 3 | marp-slide-reviewer | sonnet | プロファイル: slide (~/slide) | Marp スライド品質チェック (4段階レビュー) | marp-slide-creator |
+| 4 | marp-pdf-converter | sonnet | プロファイル: slide (~/slide) | Marp → PDF 変換 | - |
+| 5 | note-article-writer | opus | プロファイル: note (~/note) | note 記事共同執筆 (日本語, 1-2万字) | - |
+| 6 | codex-dispatcher-lead | sonnet | グローバル | Codex へ実装指示・レビューサイクル管理 (最大2ラウンド) | codex-dispatcher |
 
 ## グループ別分類
 

@@ -607,6 +607,207 @@ cmd_status_agents() {
 }
 
 # ============================================================
+# Profile functions
+# ============================================================
+#
+# Profiles bundle a set of skills + agents with a fixed target directory.
+# Used to place domain-specific skills/agents into project-scope
+# .claude/{skills,agents}/ folders under user working directories.
+
+PROFILE_NAMES=("note" "slide" "knowledge")
+
+# Populate PROFILE_TARGET / PROFILE_SKILLS / PROFILE_AGENTS for a profile.
+# Returns non-zero if the profile is unknown.
+profile_def() {
+  PROFILE_TARGET=""
+  PROFILE_SKILLS=()
+  PROFILE_AGENTS=()
+  case "$1" in
+    note)
+      PROFILE_TARGET="$HOME/note"
+      PROFILE_AGENTS=("note-article-writer")
+      ;;
+    slide)
+      PROFILE_TARGET="$HOME/slide"
+      PROFILE_SKILLS=("marp-slide-creator")
+      PROFILE_AGENTS=("marp-slide-creator" "marp-slide-reviewer" "marp-pdf-converter")
+      ;;
+    knowledge)
+      PROFILE_TARGET="$HOME/knowledge"
+      PROFILE_SKILLS=("llm-wiki")
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+cmd_list_profiles() {
+  printf "${BOLD}Available profiles:${RESET}\n\n"
+  for name in "${PROFILE_NAMES[@]}"; do
+    profile_def "$name" || continue
+    local skills_target="$PROFILE_TARGET/.claude/skills"
+    local agents_target="$PROFILE_TARGET/.claude/agents"
+
+    printf "  ${BOLD}%s${RESET}  → %s\n" "$name" "$PROFILE_TARGET"
+
+    if [ ${#PROFILE_SKILLS[@]} -gt 0 ]; then
+      printf "    skills:\n"
+      for s in "${PROFILE_SKILLS[@]}"; do
+        local st
+        st="$(check_installed "$s" "$skills_target")"
+        case "$st" in
+          symlink)        printf "      ${GREEN}%-30s${RESET} linked\n" "$s" ;;
+          copy)           printf "      ${CYAN}%-30s${RESET} copied\n" "$s" ;;
+          broken-symlink) printf "      ${RED}%-30s${RESET} broken\n" "$s" ;;
+          none)           printf "      ${YELLOW}%-30s${RESET} --\n" "$s" ;;
+        esac
+      done
+    fi
+    if [ ${#PROFILE_AGENTS[@]} -gt 0 ]; then
+      printf "    agents:\n"
+      for a in "${PROFILE_AGENTS[@]}"; do
+        local st
+        st="$(check_agent_installed "$a" "$agents_target")"
+        case "$st" in
+          symlink)        printf "      ${GREEN}%-30s${RESET} linked\n" "$a" ;;
+          copy)           printf "      ${CYAN}%-30s${RESET} copied\n" "$a" ;;
+          broken-symlink) printf "      ${RED}%-30s${RESET} broken\n" "$a" ;;
+          none)           printf "      ${YELLOW}%-30s${RESET} --\n" "$a" ;;
+        esac
+      done
+    fi
+    echo
+  done
+}
+
+cmd_install_profile() {
+  local name="${1:-}"
+  if [ -z "$name" ]; then
+    error "Usage: install-profile <name>"
+    printf "Available: %s\n" "${PROFILE_NAMES[*]}"
+    return 1
+  fi
+  if ! profile_def "$name"; then
+    error "Unknown profile: $name"
+    printf "Available: %s\n" "${PROFILE_NAMES[*]}"
+    return 1
+  fi
+  if [ ! -d "$PROFILE_TARGET" ]; then
+    error "Target directory does not exist: $PROFILE_TARGET"
+    return 1
+  fi
+
+  local skills_target="$PROFILE_TARGET/.claude/skills"
+  local agents_target="$PROFILE_TARGET/.claude/agents"
+
+  printf "\n${BOLD}Profile:${RESET} %s\n" "$name"
+  printf "${BOLD}Target:${RESET}  %s\n\n" "$PROFILE_TARGET"
+
+  local total=0 installed=0
+
+  for skill in "${PROFILE_SKILLS[@]+"${PROFILE_SKILLS[@]}"}"; do
+    total=$((total + 1))
+    if install_skill "$skill" "$skills_target"; then
+      installed=$((installed + 1))
+      info "Installed skill: $skill ($MODE) → $skills_target"
+    fi
+  done
+
+  for agent in "${PROFILE_AGENTS[@]+"${PROFILE_AGENTS[@]}"}"; do
+    total=$((total + 1))
+    if install_agent "$agent" "$agents_target"; then
+      installed=$((installed + 1))
+      info "Installed agent: $agent ($MODE) → $agents_target"
+    fi
+  done
+
+  echo
+  info "Profile '$name': $installed/$total installation(s) completed."
+}
+
+cmd_uninstall_profile() {
+  local name="${1:-}"
+  if [ -z "$name" ]; then
+    error "Usage: uninstall-profile <name>"
+    printf "Available: %s\n" "${PROFILE_NAMES[*]}"
+    return 1
+  fi
+  if ! profile_def "$name"; then
+    error "Unknown profile: $name"
+    return 1
+  fi
+
+  local skills_target="$PROFILE_TARGET/.claude/skills"
+  local agents_target="$PROFILE_TARGET/.claude/agents"
+
+  for skill in "${PROFILE_SKILLS[@]+"${PROFILE_SKILLS[@]}"}"; do
+    uninstall_skill "$skill" "$skills_target"
+    info "Uninstalled skill: $skill ← $skills_target"
+  done
+
+  for agent in "${PROFILE_AGENTS[@]+"${PROFILE_AGENTS[@]}"}"; do
+    uninstall_agent "$agent" "$agents_target"
+    info "Uninstalled agent: $agent ← $agents_target"
+  done
+  echo
+}
+
+cmd_status_profile() {
+  local only="${1:-}"
+  printf "${BOLD}Profile installation status:${RESET}\n\n"
+  for name in "${PROFILE_NAMES[@]}"; do
+    if [ -n "$only" ] && [ "$only" != "$name" ]; then
+      continue
+    fi
+    profile_def "$name" || continue
+    local skills_target="$PROFILE_TARGET/.claude/skills"
+    local agents_target="$PROFILE_TARGET/.claude/agents"
+
+    printf "  ${CYAN}%s${RESET}  → %s\n" "$name" "$PROFILE_TARGET"
+
+    if [ ! -d "$skills_target" ] && [ ! -d "$agents_target" ]; then
+      printf "    (not installed)\n\n"
+      continue
+    fi
+
+    for skill in "${PROFILE_SKILLS[@]+"${PROFILE_SKILLS[@]}"}"; do
+      local dest="$skills_target/$skill"
+      if [ -L "$dest" ]; then
+        local link_target
+        link_target="$(readlink "$dest")"
+        if [ -e "$dest" ]; then
+          printf "    ${GREEN}skill  %-25s${RESET} → %s\n" "$skill" "$link_target"
+        else
+          printf "    ${RED}skill  %-25s${RESET} broken → %s\n" "$skill" "$link_target"
+        fi
+      elif [ -d "$dest" ]; then
+        printf "    ${CYAN}skill  %-25s${RESET} copy\n" "$skill"
+      else
+        printf "    ${YELLOW}skill  %-25s${RESET} not installed\n" "$skill"
+      fi
+    done
+    for agent in "${PROFILE_AGENTS[@]+"${PROFILE_AGENTS[@]}"}"; do
+      local dest="$agents_target/${agent}.md"
+      if [ -L "$dest" ]; then
+        local link_target
+        link_target="$(readlink "$dest")"
+        if [ -e "$dest" ]; then
+          printf "    ${GREEN}agent  %-25s${RESET} → %s\n" "$agent" "$link_target"
+        else
+          printf "    ${RED}agent  %-25s${RESET} broken → %s\n" "$agent" "$link_target"
+        fi
+      elif [ -f "$dest" ]; then
+        printf "    ${CYAN}agent  %-25s${RESET} copy\n" "$agent"
+      else
+        printf "    ${YELLOW}agent  %-25s${RESET} not installed\n" "$agent"
+      fi
+    done
+    echo
+  done
+}
+
+# ============================================================
 # Help
 # ============================================================
 cmd_help() {
@@ -625,6 +826,12 @@ Agent commands:
   uninstall-agents  Uninstall agents (all if no name specified)
   status-agents     Show detailed status of installed agents
 
+Profile commands:
+  list-profiles       Show available profiles and installation status
+  install-profile     Install a profile's skills + agents to its target directory
+  uninstall-profile   Uninstall a profile's skills + agents from its target directory
+  status-profile      Show detailed status of a profile (or all profiles)
+
 Options:
   --project   Install to ./.claude/{skills,agents}/ (current project only)
   --global    Install to global directories (~/.agents/skills/, ~/.claude/agents/, etc.)
@@ -633,6 +840,12 @@ Options:
   --help      Show this help message
 
 If neither --project nor --global is specified, you will be prompted interactively.
+
+Profiles:
+  note       → ~/note        (agents: note-article-writer)
+  slide      → ~/slide       (skill: marp-slide-creator; agents: marp-slide-creator,
+                              marp-slide-reviewer, marp-pdf-converter)
+  knowledge  → ~/knowledge   (skill: llm-wiki)
 
 Examples:
   ./install.sh list
@@ -643,6 +856,14 @@ Examples:
   ./install.sh install-agents marp-slide-creator
   ./install.sh install-agents --project
   ./install.sh status-agents
+  ./install.sh list-profiles
+  ./install.sh install-profile slide
+  ./install.sh install-profile knowledge --force
+  ./install.sh status-profile
+  # After switching a skill/agent into a profile, remove the global copy:
+  ./install.sh uninstall marp-slide-creator llm-wiki
+  ./install.sh uninstall-agents note-article-writer marp-slide-creator \\
+      marp-slide-reviewer marp-pdf-converter
 HELP
 }
 
@@ -661,7 +882,7 @@ main() {
       --project) SCOPE="project" ;;
       --global)  SCOPE="global" ;;
       --help|-h) cmd_help; exit 0 ;;
-      list|install|uninstall|status|list-agents|install-agents|uninstall-agents|status-agents)
+      list|install|uninstall|status|list-agents|install-agents|uninstall-agents|status-agents|list-profiles|install-profile|uninstall-profile|status-profile)
         if [ -z "$command" ]; then
           command="$1"
         else
@@ -694,6 +915,10 @@ main() {
     install-agents)    cmd_install_agents "${skill_args[@]+"${skill_args[@]}"}" ;;
     uninstall-agents)  cmd_uninstall_agents "${skill_args[@]+"${skill_args[@]}"}" ;;
     status-agents)     cmd_status_agents ;;
+    list-profiles)     cmd_list_profiles ;;
+    install-profile)   cmd_install_profile "${skill_args[@]+"${skill_args[@]}"}" ;;
+    uninstall-profile) cmd_uninstall_profile "${skill_args[@]+"${skill_args[@]}"}" ;;
+    status-profile)    cmd_status_profile "${skill_args[@]+"${skill_args[@]}"}" ;;
     *)                 cmd_help; exit 1 ;;
   esac
 }
