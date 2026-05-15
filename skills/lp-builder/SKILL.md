@@ -30,7 +30,6 @@ description: ワイヤーフレーム、カラー指針、サービス資料を�
 - `shadcn-ui`: shadcn/uiの導入やコンポーネント選定
 - `playwright-automation`: ブラウザ表示確認、スクリーンショット確認
 - `web-design-guidelines`: アクセシビリティ、UI/UX監査（SEO監査ではなく、アクセシビリティ確認観点として使う）
-- `flow-plan`: 実装前に詳細計画が必要な場合
 
 ## Workflow
 
