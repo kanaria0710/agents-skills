@@ -29,7 +29,7 @@ description: ワイヤーフレーム、カラー指針、サービス資料を�
 - `frontend-design`: UI設計、見た目の磨き込み
 - `shadcn-ui`: shadcn/uiの導入やコンポーネント選定
 - `playwright-automation`: ブラウザ表示確認、スクリーンショット確認
-- `web-design-guidelines`: アクセシビリティ、UX監査
+- `web-design-guidelines`: アクセシビリティ、UI/UX監査（SEO監査ではなく、アクセシビリティ確認観点として使う）
 - `flow-plan`: 実装前に詳細計画が必要な場合
 
 ## Workflow
@@ -45,9 +45,9 @@ description: ワイヤーフレーム、カラー指針、サービス資料を�
    - 実績、数値、効果を書く場合は、根拠、条件、掲載可否を確認する。
 
 3. SEO/CVR設計
-   - 軽量LPではtitle、description、H1、OGP、CTA配置を中心に整える。
-   - SEO重視の場合は、主要キーワード、関連キーワード、競合SERP、FAQ、構造化データまで確認する。
-   - 最新SERPや競合確認が必要な場合はWeb確認を行い、出典を残す。
+   - ユーザーが「SEOは最低限でよい」「検索流入は気にしない」と明示しない限り、SEOはフルで考慮する。
+   - title、description、H1、見出し構造、canonical、OGP、robots、sitemap、FAQ、構造化データ、画像alt、URL設計、表示速度、モバイル表示まで確認する。
+   - 主要キーワード、関連キーワード、検索意図、競合SERP、最新SERPの確認が必要な場合はWeb確認を行い、出典を残す。
    - CTAはHero、判断材料の後、料金/FAQ後など自然な位置に置く。
 
 4. 実装
@@ -61,11 +61,13 @@ description: ワイヤーフレーム、カラー指針、サービス資料を�
    - desktop/mobileでスクリーンショット確認を行う。
    - 暗い背景には白系文字、薄い背景には濃い文字を使う。
    - CTA、フォーム、フォーカス表示、モバイル固定CTA、文字折り返しを確認する。
+   - 公開前のアクセシビリティ、UI、UX監査では原則 `web-design-guidelines` を使う。利用できない場合は理由を報告する。
    - 未完成セクション、仮リンク、ドラフト文言、不要画像は公開物から外す。
 
 6. 公開前チェック
    - 内部情報、架空実績、根拠のない断定、過度な誇張、保証に見える表現がないことを確認する。
-   - ブランド表記、title/description、canonical、OGP、sitemap、robots、フォームURL、計測ID、ドメインを必要に応じて確認する。
+   - SEO監査として、title/description、H1、見出し構造、canonical、OGP/Twitter Card、robots.txt、sitemap.xml、構造化データ、FAQ schema、画像alt、内部リンク、noindex混入、公開URLとcanonicalの整合をできる限り確認する。
+   - ブランド表記、フォームURL、計測ID、ドメインを必要に応じて確認する。
    - 静的生成、限定的なhydration、画像軽量化、不要な重い演出がないことを確認する。
    - 実行できるtest/check/buildを回し、結果を報告する。
 
@@ -75,4 +77,5 @@ description: ワイヤーフレーム、カラー指針、サービス資料を�
 - 変更したLPの概要
 - 主な変更ファイル
 - 実行した検証コマンドと結果
+- SEO監査とアクセシビリティ/UI監査の結果
 - 残っている差し替え項目や公開前確認事項
