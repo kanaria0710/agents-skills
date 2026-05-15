@@ -634,7 +634,7 @@ profile_def() {
       ;;
     knowledge)
       PROFILE_TARGET="$HOME/knowledge"
-      PROFILE_SKILLS=("llm-wiki")
+      PROFILE_SKILLS=("llm-wiki" "circleback-ingest")
       ;;
     *)
       return 1
@@ -845,7 +845,7 @@ Profiles:
   note       → ~/note        (agents: note-article-writer)
   slide      → ~/slide       (skill: marp-slide-creator; agents: marp-slide-creator,
                               marp-slide-reviewer, marp-pdf-converter)
-  knowledge  → ~/knowledge   (skill: llm-wiki)
+  knowledge  → ~/knowledge   (skills: llm-wiki, circleback-ingest)
 
 Examples:
   ./install.sh list
